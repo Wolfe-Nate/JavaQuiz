@@ -7,6 +7,7 @@ var timerEl = document.querySelector(".timer-count");
 var option1 = document.getElementById("option1"); // choices for questions
 var option2 = document.getElementById("option2"); // choices for questions
 var option3 = document.getElementById("option3"); // choices for questions
+var check = document.getElementById("check");
 var questionTitle = document.getElementById("question"); // the question its self
 var timeState;
 var timerCount = 60;
@@ -81,15 +82,19 @@ function displayQuestions() {
 }
 //on a question is answered time is deducted from the timer, a penalty
 function checkAnswer() {
-  if (this.value === questionArray[questionIndex].answer) {
-    alert("Correct!");
+  if (this.getAttribute("data-value") == questionArray[questionIndex].answer) {
+    check.textContent = questionArray[questionIndex].explanation;
   } else {
-    alert("Incorrect");
+    check.textContent = "incorrect";
     timerCount = timerCount - 10;
-    timerDisplay.textContent = timerCount;
   }
-  questionIndex++;
-  displayQuestions();
+  if (questionIndex < questionArray.length - 1) {
+    questionIndex++;
+    displayQuestions();
+  } else {
+    alert("end"); // hide questionCont
+    // local storage and highscores a tag that links to highscore. append highscores and like to main page for restart.
+  }
 }
 //if all questions are answered or the timer reaches 0 the game is over.
 //when the game is over an alert will pop up and save my Initials and score, local storage.
@@ -99,3 +104,7 @@ startGame.addEventListener("click", function () {
   displayQuestions();
   startTimer();
 });
+
+option1.addEventListener("click", checkAnswer);
+option2.addEventListener("click", checkAnswer);
+option3.addEventListener("click", checkAnswer);
