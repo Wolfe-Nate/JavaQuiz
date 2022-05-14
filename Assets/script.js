@@ -3,12 +3,15 @@
 //make a start button , then a timer starts showing the first question
 var startGame = document.querySelector("#gameStart");
 var questionCont = document.querySelector("#questionsCont");
+var scores = document.getElementById("scores");
 var timerEl = document.querySelector(".timer-count");
 var option1 = document.getElementById("option1"); // choices for questions
 var option2 = document.getElementById("option2"); // choices for questions
 var option3 = document.getElementById("option3"); // choices for questions
 var check = document.getElementById("check");
 var questionTitle = document.getElementById("question"); // the question its self
+scores.setAttribute("class", "hide");
+questionCont.setAttribute("class", "hide");
 var timeState;
 var timerCount = 60;
 var questionIndex = 0;
@@ -60,7 +63,6 @@ var questionArray = [
 ];
 
 console.log(questionArray);
-questionCont.style.display = "none";
 //Need function of start game
 
 function startTimer() {
@@ -69,6 +71,7 @@ function startTimer() {
     timerEl.textContent = timerCount;
     if (timerCount <= 0) {
       clearInterval(timeState);
+      endGame();
     }
   }, 1000);
 }
@@ -92,19 +95,47 @@ function checkAnswer() {
     questionIndex++;
     displayQuestions();
   } else {
-    alert("end"); // hide questionCont
-    // local storage and highscores a tag that links to highscore. append highscores and like to main page for restart.
+    clearInterval(timeState);
+    endGame();
   }
 }
 //if all questions are answered or the timer reaches 0 the game is over.
 //when the game is over an alert will pop up and save my Initials and score, local storage.
 startGame.addEventListener("click", function () {
-  questionCont.style.display = "block";
-  startGame.style.display = "none";
+  document.querySelector(".rules").setAttribute("class", "hide");
+  questionCont.setAttribute("class", "show");
+  startGame.setAttribute("class", "hide");
   displayQuestions();
   startTimer();
 });
 
+function endGame() {
+  questionCont.setAttribute("class", "hide"); // hide questionCont
+  scores.setAttribute("class", "show");
+  timerEl.textContent = timerCount;
+  document.getElementById("finalscore").textContent =
+    "Your Final Score: " + timerCount;
+  console.log(timerCount);
+}
+
 option1.addEventListener("click", checkAnswer);
 option2.addEventListener("click", checkAnswer);
 option3.addEventListener("click", checkAnswer);
+document.getElementById("saveScore").addEventListener("click", function () {
+  var userInitals = document.getElementById("initials").value;
+  var value = [{ score: timerCount, Initials: userInitals }];
+  var previous = JSON.parse(localStorage.getItem("High-Score")) || [];
+  previous.push(value);
+  localStorage.setItem("High-Score", JSON.stringify(previous));
+});
+
+// questionCont.setAttribute("class", "hide"); // hide questionCont
+//     console.log(timerCount);
+//     //check value of the timer at end of question 5.
+//     //store an array of objects [] and each object is going to have two keys score and initails. stringafy before I setitem into local storage. second arguement
+
+//     var value = [{ score: 23, Initials: "NW" }];
+//     localStorage.setItem("High-Score", JSON.stringify(value));
+//     //set item and get item
+//     // local storage and highscores a tag that links to highscore. append highscores and like to main page for restart.
+//     //stop timer at the value.
